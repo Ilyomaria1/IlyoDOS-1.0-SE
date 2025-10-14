@@ -38,3 +38,8 @@ to the following conditions:
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
+
+  ## License
+The NilOS 512-byte boot sector is released under the **NilOS Boot Sector License (MIT-Modified)**.  
+All other NilOS components (kernel, drivers, GUI, etc.) are proprietary and closed-source.  
+Unauthorized access, modification, or redistribution of any other part of NilOS is prohibited.
