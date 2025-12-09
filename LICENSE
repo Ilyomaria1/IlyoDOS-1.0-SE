@@ -1,36 +1,38 @@
-NilOS Boot Sector License (MIT-Modified)
+IlyoDOS 1.0 SE License (MIT-Modified)
 
 Copyright (c) 2025 Ilyomaria/Ilyomaria1
 All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this 512-byte boot sector code and associated documentation files
-(the "Software"), to view, use, copy, and distribute this Software, subject
-to the following conditions:
+of this software and associated documentation files (the "Software"), to
+view, read, study, and use the Software for personal or educational purposes,
+subject to the following conditions:
 
-1. Scope Limitation  
-   This license applies only to the 512-byte boot sector portion of NilOS.
-   All other portions of NilOS—including but not limited to its kernel,
-   drivers, file system, and graphical subsystems—are proprietary and not
-   covered by this license. Accessing, copying, decompiling, or redistributing
-   any NilOS code beyond the 512-byte boot sector is strictly prohibited
-   without written permission from the copyright holder.
+1. No Modification
+   The Software may not be modified, altered, reverse-engineered, rewritten,
+   extended, patched, or incorporated into derivative works of any kind.
+   Distribution of modified versions is strictly prohibited.
 
-2. Modification and Attribution  
-   If the Software is modified and redistributed in binary or source form,
-   the resulting boot sector must clearly preserve and display the original
-   copyright notice and attribution text:
-       “© 2025 Ilyomaria – NilOS Boot Sector”
-   either through on-screen output, printed text, or visible binary string
-   within the first 512 bytes. Removal or obfuscation of this notice is
-   strictly prohibited.
+2. Redistribution
+   Redistribution of the Software is permitted only if it is:
+     - unmodified,
+     - includes this complete license text,
+     - and preserves the original copyright notice.
 
-3. Redistribution  
-   Redistributions of the Software, whether modified or unmodified, must
-   include this license text in all copies or substantial portions of the
-   Software.
+3. Attribution
+   Any permitted redistribution must clearly display the original attribution:
+       "© 2025 Ilyomaria – IlyoDOS 1.0 SE"
+   in documentation, about pages, or any distribution form.
 
-4. Warranty Disclaimer  
+4. Scope
+   This license applies to the entire IlyoDOS 1.0 SE system, including but
+   not limited to the boot sector, kernel, drivers, file system, userland,
+   binaries, and graphical components.
+
+   All components are released as read-only open source: available to
+   study and use, but not to modify.
+
+5. Warranty Disclaimer
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,8 +40,3 @@ to the following conditions:
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
-
-  ## License
-The NilOS 512-byte boot sector is released under the **NilOS Boot Sector License (MIT-Modified)**.  
-All other NilOS components (kernel, drivers, GUI, etc.) are proprietary and closed-source.  
-Unauthorized access, modification, or redistribution of any other part of NilOS is prohibited.
