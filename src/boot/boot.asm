@@ -216,8 +216,51 @@ keyboard_bin_file_read:
 
 	dec di
 	cmp di, 0
-	je print_welcome
+	je di_configure6
 	jmp keyboard_bin_file_read
+
+di_configure6:
+	mov di, 5
+
+setup_bin_file_read:
+
+	mov ax, 99
+	call lba_to_chs
+
+	mov ah, 2h
+	mov al, 4
+	mov dl, [drive_num]
+	mov bx, 0x1000
+	mov es, bx
+	mov bx, 0x200
+	int 13h
+
+	dec di
+	cmp di, 0
+	je di_configure7 
+	jmp setup_bin_file_read
+
+di_configure7:
+	mov di, 5
+
+CONFIG_file_read:
+
+	mov ax, 100
+	call lba_to_chs
+
+	mov ah, 2h
+	mov al, 1
+	mov dl, [drive_num]
+	mov bx, 0x1000
+	mov es, bx
+	mov bx, 0x800
+	int 13h
+
+	dec di
+	cmp di, 0
+	je print_welcome
+	jmp CONFIG_file_read
+
 
 print_welcome:
 
