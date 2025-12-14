@@ -41,22 +41,21 @@ PS2_read_key:
     in al, 0x64
     test al, 1
     jz PS2_read_key
+
     in al, 0x60
     mov ah, al
-    test ah, 0x80
-    jnz break_code
 
-continue_PS2_read:
+    test ah, 0x80
+    jnz .break
 
     call 0x10000
+    or al, al
     ret
 
-break_code:
-
-    sub ah, 0x80
-    jmp continue_PS2_read
-
-done:
+.break:
+    and ah, 0x7F
+    xor al, al
+    test al, al
     ret
 
 
@@ -122,7 +121,8 @@ CPU_confirm:
 key:
 
     call PS2_read_key
-    jmp key
+    call 0x10000
+    jmp exit
     
 shut_down_machine:
 
