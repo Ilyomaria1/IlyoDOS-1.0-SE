@@ -273,16 +273,6 @@ control_protection_exception:
 	dq 0
 	dq 0
 
-software_interrupts_IDT:
-main_software_interrupts:
-
-	dw software_int32
-	dw 0x8
-	db 0
-	db 0x8e
-	dw 0
-
-
 IDT_end:
 
 IDT_descriptor:
@@ -327,17 +317,17 @@ print_loop_kernel_panic:
 main:
 load_IDT:
 	lidt [IDT_descriptor]
-	jmp user_code
 
-software_int32:
+setup_check_if_valid:
 
-	jmp exit
+	mov al, [0x10800]
+	cmp al, 0
+	je jump_to_setup_bin
 
-user_code:
+jump_to_setup_bin:
 
-	mov ah, 0x1c
-	call 0x1000
-	jmp exit
+	jmp 0x10200
+
 
 data:
 
