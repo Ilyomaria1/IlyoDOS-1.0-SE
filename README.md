@@ -1,2 +1,2 @@
-IlyoDOs 1.0 SE
-A modern OS designed for 80s/90s machines
+IlyoDOS 1.0 SE
+A modern DOS designed for older machines
