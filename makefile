@@ -1,75 +1,42 @@
-# Directories
-SRC_BOOT_DIR := src/boot
-SRC_KERNEL_DIR := src/kernel
-SRC_SETUP_DIR := src/setup
-BUILD_DIR := build
-RESULT_DIR := $(BUILD_DIR)/result
+OUTPUT_IMG := build/result/floppy.img
 
-# Files
-BOOT_ASM := $(SRC_BOOT_DIR)/boot.asm
-BOOT_BIN := $(BUILD_DIR)/boot.bin
+MAKE_ASSEMBLER := nasm
+MAKE_EMULATOR := qemu-system-i386
 
-KER_MAIN_ASM := $(SRC_KERNEL_DIR)/kernel.asm
-KER_MAIN_BIN := $(BUILD_DIR)/KERNEL.BIN
+all: $(OUTPUT_IMG)
 
-KEYBOARD_ASM := $(SRC_KERNEL_DIR)/keyboard.asm
-KEYBOARD_BIN := $(BUILD_DIR)/KEYBOARD.BIN
+assemble: 
+	mkdir -p build
+	$(MAKE_ASSEMBLER) -f bin src/boot/boot.asm -o build/boot.bin
 
-SETUP_ASM := $(SRC_SETUP_DIR)/setup.asm
-SETUP_BIN := $(BUILD_DIR)/SETUP.BIN
+	$(MAKE_ASSEMBLER) -f bin src/kernel/kernel.asm -o build/KERNEL.BIN
 
-CONFIG_FILE := $(BUILD_DIR)/CONFIG     # no extension
+	$(MAKE_ASSEMBLER) -f bin src/kernel/keyboard.asm -o build/KEYBOARD.BIN
 
-FLOPPY_IMG := $(RESULT_DIR)/floppy.img
+	$(MAKE_ASSEMBLER) -f bin src/setup/setup.asm -o build/SETUP.BIN
 
-# Tools
-NASM := nasm
-DD := dd
-MKFS := mkfs.fat
-QEMU := qemu-system-i386
+	touch build/CONFIG
 
-all: $(FLOPPY_IMG)
-
-$(BOOT_BIN): $(BOOT_ASM)
-	mkdir -p $(BUILD_DIR)
-	$(NASM) -f bin $(BOOT_ASM) -o $(BOOT_BIN)
-
-$(KER_MAIN_BIN): $(KER_MAIN_ASM)
-	mkdir -p $(BUILD_DIR)
-	$(NASM) -f bin $(KER_MAIN_ASM) -o $(KER_MAIN_BIN)
-
-$(KEYBOARD_BIN): $(KEYBOARD_ASM)
-	mkdir -p $(BUILD_DIR)
-	$(NASM) -f bin $(KEYBOARD_ASM) -o $(KEYBOARD_BIN)
-
-$(SETUP_BIN): $(SETUP_ASM)
-	mkdir -p $(BUILD_DIR)
-	$(NASM) -f bin $(SETUP_ASM) -o $(SETUP_BIN)
-
-# Create config file if it doesn't exist
-$(CONFIG_FILE):
-	touch $(CONFIG_FILE)
-
-$(FLOPPY_IMG): $(BOOT_BIN) $(KER_MAIN_BIN) $(KEYBOARD_BIN) $(SETUP_BIN) $(CONFIG_FILE)
-	mkdir -p $(RESULT_DIR)
-	$(DD) if=/dev/zero of=$(FLOPPY_IMG) bs=512 count=2880
-	$(MKFS) -F 12 -n ILYOOS_SE1 $(FLOPPY_IMG)
+$(OUTPUT_IMG): assemble
+	mkdir -p build/result
+	dd if=/dev/zero of=$@ bs=512 count=2880
+	mkfs.fat -F 12 -n ILYOOS_SE1 $@
 
 	# write boot sector
-	$(DD) if=$(BOOT_BIN) of=$(FLOPPY_IMG) bs=512 count=1 conv=notrunc
+	dd if=build/boot.bin of=$@ bs=512 count=1 conv=notrunc
 
-	# copy kernel, keyboard, setup, and config into floppy
-	mcopy -i $(FLOPPY_IMG) $(KER_MAIN_BIN) ::
-	mcopy -i $(FLOPPY_IMG) $(KEYBOARD_BIN) ::
-	mcopy -i $(FLOPPY_IMG) $(SETUP_BIN) ::
-	mcopy -i $(FLOPPY_IMG) $(CONFIG_FILE) ::CONFIG
+	# copy files into floppy
+	mcopy -i $@ build/KERNEL.BIN ::
+	mcopy -i $@ build/KEYBOARD.BIN ::
+	mcopy -i $@ build/SETUP.BIN ::
+	mcopy -i $@ build/CONFIG ::CONFIG
 
-run: $(FLOPPY_IMG)
-	$(QEMU) \
-		-drive file=$(FLOPPY_IMG),if=floppy,format=raw \
+run: $(OUTPUT_IMG)
+	$(MAKE_EMULATOR) \
+		-drive file=$(OUTPUT_IMG),if=floppy,format=raw \
 		-m 32M -cpu 486 -monitor stdio
-
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(OUTPUT_IMG)
 
 .PHONY: all run clean
+
