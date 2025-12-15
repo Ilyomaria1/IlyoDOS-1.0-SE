@@ -6,7 +6,7 @@ bpb:
 
 	jmp short start
 	nop
-	oem									db "ILYOOS1 "
+	oem									db "ILYODOS "
 	bytes_per_sector					dw 512
 	sectors_per_cluster					db 1
 	reserved_sectors					dw 1
@@ -280,7 +280,6 @@ exit:
 	jmp 0:0x7e00
 
 data:
-
 	welcome db "Welcome to IlyoOS!", endl, 0
 
 fat_data:
@@ -289,7 +288,10 @@ fat_data:
 	root_dir_sectors dw 0
 	data_start dw 0
 	
-important:
 
-	times 510-($-$$) db 0
-	dw 0xAA55
+
+times 510-($-$$) db 0
+dw 0xAA55
+
+; the code here was going to kill me so i couldnt improve it much x
+; haxTed();

@@ -47,54 +47,19 @@ protected_mode_start:
 	mov ss, ax
 	jmp main
 
-functions:
-fill_blue_screen:
-
-    mov edi, 0xb8000
-    mov ecx, 2000
-    mov al, ' '
-    mov ah, 0x1F
-    
-loop:
-
-    mov [edi], ax
-    add edi, 2
-    loop loop
+; @param ax: color
+fill_screen:
+	mov ecx, 1000
+	mov edi, 0xb8000
+	rep stosb
     ret
 
-fill_black_screen:
-
-    mov edi, 0xb8000
-    mov ecx, 2000
-    mov al, ' '
-    mov ah, 0x0F
-    
-loop1:
-
-    mov [edi], ax
-    add edi, 2
-    loop loop1
-    ret
-
-fill_yellow_screen:
-
-    mov edi, 0xb8000
-    mov ecx, 2000
-    mov al, ' '
-    mov ah, 0xe0
-    
-loop2:
-
-    mov [edi], ax
-    add edi, 2
-    loop loop2
-    ret
 
 	
 IDT_start:
 division_error:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -102,7 +67,7 @@ division_error:
 
 debug_exception:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -110,7 +75,7 @@ debug_exception:
 
 NMI_interrupt:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -118,7 +83,7 @@ NMI_interrupt:
 
 break_point:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -126,7 +91,7 @@ break_point:
 
 overflow:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -134,7 +99,7 @@ overflow:
 
 bound_range_exceeded:
 
-	dw print_kernel_panic_yellow
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -142,7 +107,7 @@ bound_range_exceeded:
 
 invalid_opcode:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -150,7 +115,7 @@ invalid_opcode:
 
 no_coprocessor_found:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -158,7 +123,7 @@ no_coprocessor_found:
 
 double_fault:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -166,7 +131,7 @@ double_fault:
 
 coprocessesor_segment_overrun:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -174,7 +139,7 @@ coprocessesor_segment_overrun:
 
 invalid_TSS:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -182,7 +147,7 @@ invalid_TSS:
 
 segment_not_present:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -190,7 +155,7 @@ segment_not_present:
 
 stack_segment_fault:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -198,7 +163,7 @@ stack_segment_fault:
 
 general_protection_fault:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -206,7 +171,7 @@ general_protection_fault:
 
 page_fault:
 
-	dw print_kernel_panic_yellow
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -216,7 +181,7 @@ page_fault:
 
 x87_floating_point_error:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -224,7 +189,7 @@ x87_floating_point_error:
 
 alignment_check:
 
-	dw print_kernel_panic_yellow
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -232,7 +197,7 @@ alignment_check:
 
 machine_check:
 
-	dw print_kernel_panic_black
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -240,7 +205,7 @@ machine_check:
 
 simd_floating_point_exception:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -248,7 +213,7 @@ simd_floating_point_exception:
 
 virtualization_exception:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -256,7 +221,7 @@ virtualization_exception:
 
 control_protection_exception:
 
-	dw print_kernel_panic_blue
+	dw print_kernel_panic
 	dw 0x8
 	db 0
 	db 0x8e
@@ -281,29 +246,14 @@ IDT_descriptor:
 	dd IDT_start
 
 KERNEL_EXCEPTION_PRINTS:
-print_kernel_panic_blue:
-
-    call fill_blue_screen
+print_kernel_panic:
+	mov ax, 0x1f
+    call fill_screen
     mov edi, 0xb8000
     mov esi, kernel_panic
     mov ah, 0x1f
     jmp print_loop_kernel_panic
 
-print_kernel_panic_yellow:
-
-    call fill_yellow_screen
-    mov edi, 0xb8000
-    mov esi, kernel_panic
-    mov ah, 0xe0
-    jmp print_loop_kernel_panic
-
-print_kernel_panic_black:
-
-    call fill_black_screen
-    mov edi, 0xb8000
-    mov esi, kernel_panic
-    mov ah, 0x0f
-    jmp print_loop_kernel_panic
 
 print_loop_kernel_panic:
 

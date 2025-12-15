@@ -27,7 +27,7 @@ table:
     db 'k'
     db 'l'
     db ';'
-    db '\''
+    db '\'
     db '`'
     db 0
     db '\'
